@@ -1,6 +1,7 @@
 package com.whirly
 
 import com.whirly.util.{DateUtils, DirUtil}
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
 
 /**
@@ -14,7 +15,7 @@ object SparkStatFormatJob {
     val spark = SparkSession.builder().appName("SparkStatFormatJob").master("local[2]").getOrCreate()
 
     // 获取 日志文件 access.1w.log RDD
-    val accessFile = spark.sparkContext.textFile(Constants.protocol + Constants.rawPath)
+    val accessFile: RDD[String] = spark.sparkContext.textFile(Constants.protocol + Constants.rawPath)
 
     // accessFile.take(10).foreach(println)
 

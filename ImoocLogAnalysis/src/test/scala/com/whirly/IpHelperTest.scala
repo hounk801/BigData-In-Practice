@@ -1,6 +1,7 @@
 package com.whirly
 
-import com.ggstar.util.ip.IpHelper
+import com.whirly.util.IpHelper
+
 
 object IpHelperTest {
   def main(args: Array[String]): Unit = {

@@ -1,6 +1,5 @@
 package com.whirly.util
 
-import com.ggstar.util.ip.IpHelper
 import org.apache.commons.lang3.StringUtils
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.types.{LongType, StringType, StructField, StructType}
