@@ -1,8 +1,9 @@
 package com.whirly
 
 import com.whirly.util.AccessConvertUtil
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
-import org.apache.spark.sql.{SaveMode, SparkSession}
+import org.apache.spark.sql.{DataFrame, Row, SaveMode, SparkSession}
 
 /**
   * 使用Spark完成我们的数据清洗操作
@@ -20,11 +21,11 @@ object SparkStatCleanJob {
 
     // accessRDD.take(10).foreach(println)
 
-    val filterRDD = accessRDD.map(line => AccessConvertUtil.parseLog(line))
+    val filterRDD: RDD[Row] = accessRDD.map(line => AccessConvertUtil.parseLog(line))
     //.filter(row => !"全球".equals(row.getAs[String](5)))
 
     //RDD ==> DataFrame
-    val accessDF = spark.createDataFrame(filterRDD, AccessConvertUtil.struct)
+    val accessDF: DataFrame = spark.createDataFrame(filterRDD, AccessConvertUtil.struct)
       // 过滤掉city为 全球 的记录  过滤不干净怎么回事？
       //.filter($"city" =!= "全球")
       //.where(col("city") =!= "全球")
@@ -33,7 +34,7 @@ object SparkStatCleanJob {
     accessDF.show(false)
 
     // 保存到 CSV，方便查看结果，与 parquet 比较
-    accessDF.coalesce(1).write.format("csv").mode(SaveMode.Overwrite).partitionBy("day").save("file:///F:/data/imooc-log/cleanedCsv")
+    accessDF.coalesce(1).write.format("csv").mode(SaveMode.Overwrite).partitionBy("day").save(Constants.protocol+Constants.cleanedCsv)//"file:///F:/data/imooc-log/cleanedCsv")
     // 保存到 parquet  测试数据2464条，  CSV ===> 199K      parquet ===> 30K   可见 parquet 的优势
     accessDF.coalesce(1).write.format("parquet").mode(SaveMode.Overwrite).partitionBy("day").save(Constants.protocol + Constants.cleanedOut)
 
